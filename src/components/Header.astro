@@ -1,0 +1,182 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { SITE } from '@lib/config';
+
+const navLinks = [
+  { href: '/blog', label: 'Blog' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header" data-pagefind-ignore>
+  <div class="container header-inner">
+    <a href="/" class="site-title" aria-label="Home">{SITE.title}</a>
+
+    <!-- Desktop nav -->
+    <nav aria-label="Main navigation" class="nav-desktop">
+      {navLinks.map(link => (
+        <a
+          href={link.href}
+          class:list={['nav-link', { active: currentPath.startsWith(link.href) }]}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="header-actions">
+      <ThemeToggle />
+
+      <!-- Mobile nav toggle -->
+      <details class="nav-mobile-wrapper">
+        <summary aria-label="Open navigation menu" class="nav-mobile-toggle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </summary>
+        <nav aria-label="Mobile navigation" class="nav-mobile">
+          {navLinks.map(link => (
+            <a
+              href={link.href}
+              class:list={['nav-mobile-link', { active: currentPath.startsWith(link.href) }]}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    height: 60px;
+  }
+
+  .site-title {
+    font-family: var(--font-mono);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-text);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .site-title:hover {
+    color: var(--color-accent);
+  }
+
+  /* Desktop nav */
+  .nav-desktop {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex: 1;
+  }
+
+  .nav-link {
+    padding: var(--space-2) var(--space-3);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: color var(--transition), background var(--transition);
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--color-text);
+    background: var(--color-surface);
+  }
+
+  .nav-link.active {
+    font-weight: 600;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-left: auto;
+  }
+
+  /* Mobile nav */
+  .nav-mobile-wrapper {
+    display: none;
+  }
+
+  .nav-mobile-toggle {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    transition: color var(--transition), background var(--transition);
+  }
+
+  .nav-mobile-toggle::-webkit-details-marker { display: none; }
+
+  .nav-mobile-toggle:hover {
+    color: var(--color-text);
+    background: var(--color-surface);
+  }
+
+  .nav-mobile {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-4) var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .nav-mobile-link {
+    padding: var(--space-3) var(--space-3);
+    color: var(--color-text-muted);
+    font-size: var(--text-base);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: color var(--transition), background var(--transition);
+  }
+
+  .nav-mobile-link:hover,
+  .nav-mobile-link.active {
+    color: var(--color-text);
+    background: var(--color-surface);
+  }
+
+  @media (max-width: 640px) {
+    .nav-desktop { display: none; }
+    .nav-mobile-wrapper { display: block; }
+  }
+</style>

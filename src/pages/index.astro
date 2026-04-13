@@ -1,0 +1,186 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/PostCard.astro';
+import ProjectCard from '@components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+import { sortPosts } from '@lib/utils';
+import { SITE } from '@lib/config';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = sortPosts(allPosts);
+const featuredPosts = posts.filter(p => p.data.featured).slice(0, 3);
+const recentPosts = posts.slice(0, 3);
+const displayPosts = featuredPosts.length > 0 ? featuredPosts : recentPosts;
+
+const allProjects = await getCollection('projects');
+const featuredProjects = allProjects
+  .filter(p => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const homepageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE.author.name,
+  url: SITE.url,
+  description: SITE.description,
+  sameAs: [SITE.author.github, SITE.author.linkedin].filter(Boolean),
+};
+---
+
+<BaseLayout
+  title="Home"
+  description={SITE.description}
+  schema={homepageSchema}
+>
+  <div class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="hero-name">{SITE.author.name}</h1>
+      <p class="hero-tagline">Engineer. Writer. Builder of things.</p>
+      <p class="hero-bio">
+        I write about systems programming, web development, and open source.
+        Sometimes I build things and then write about those too.
+      </p>
+      <div class="hero-links">
+        <a href="/blog" class="btn-primary">Read the blog</a>
+        <a href="/about" class="btn-secondary">About me</a>
+      </div>
+    </section>
+
+    <!-- Recent / Featured Posts -->
+    <section class="home-section" aria-labelledby="posts-heading">
+      <div class="section-header">
+        <h2 id="posts-heading" class="section-title">
+          {featuredPosts.length > 0 ? 'Featured posts' : 'Recent posts'}
+        </h2>
+        <a href="/blog" class="section-link">All posts &rarr;</a>
+      </div>
+      <div class="post-list">
+        {displayPosts.map(post => <PostCard post={post} />)}
+      </div>
+    </section>
+
+    <!-- Featured Projects -->
+    {featuredProjects.length > 0 && (
+      <section class="home-section" aria-labelledby="projects-heading">
+        <div class="section-header">
+          <h2 id="projects-heading" class="section-title">Projects</h2>
+          <a href="/projects" class="section-link">All projects &rarr;</a>
+        </div>
+        <div class="projects-grid">
+          {featuredProjects.map(project => <ProjectCard project={project} />)}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: var(--space-16) 0 var(--space-12);
+    max-width: var(--max-width-prose);
+  }
+
+  .hero-name {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-2);
+    color: var(--color-text);
+  }
+
+  .hero-tagline {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-bio {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    margin-bottom: var(--space-8);
+  }
+
+  .hero-links {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: var(--space-3) var(--space-6);
+    background: var(--color-accent);
+    color: #fff;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: background var(--transition);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-accent-hover);
+    color: #fff;
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    padding: var(--space-3) var(--space-6);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: color var(--transition), border-color var(--transition);
+  }
+
+  .btn-secondary:hover {
+    color: var(--color-text);
+    border-color: var(--color-text);
+  }
+
+  .home-section {
+    padding-bottom: var(--space-16);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .section-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .section-link {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+
+  .section-link:hover {
+    color: var(--color-accent);
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+</style>

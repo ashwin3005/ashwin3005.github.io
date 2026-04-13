@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/PostCard.astro';
+import { sortPosts, getAllTags } from '@lib/utils';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  const tags = getAllTags(allPosts);
+  return tags.map(tag => ({
+    params: { tag },
+    props: {
+      posts: sortPosts(allPosts).filter(p => p.data.tags.includes(tag)),
+      tag,
+    },
+  }));
+}
+
+const { posts, tag } = Astro.props;
+---
+
+<BaseLayout
+  title={`Posts tagged "${tag}"`}
+  description={`All posts tagged with "${tag}"`}
+>
+  <div class="container tag-page">
+    <header class="tag-header">
+      <a href="/blog" class="back-link">&larr; All posts</a>
+      <h1 class="tag-title">
+        <span class="tag-prefix">tag:</span>{tag}
+      </h1>
+      <p class="tag-count">{posts.length} post{posts.length !== 1 ? 's' : ''}</p>
+    </header>
+
+    <div class="post-list">
+      {posts.map(post => (
+        <PostCard post={post} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .tag-page {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .tag-header {
+    margin-bottom: var(--space-10);
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    margin-bottom: var(--space-4);
+    transition: color var(--transition);
+  }
+
+  .back-link:hover { color: var(--color-accent); }
+
+  .tag-title {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-2);
+  }
+
+  .tag-prefix {
+    color: var(--color-text-muted);
+    margin-right: var(--space-1);
+  }
+
+  .tag-count {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+</style>

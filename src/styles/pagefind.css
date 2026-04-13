@@ -1,0 +1,79 @@
+/* ============================================================
+   Pagefind UI overrides — match site design tokens
+   ============================================================ */
+.pagefind-ui {
+  --pagefind-ui-scale: 1;
+  --pagefind-ui-primary: var(--color-accent);
+  --pagefind-ui-text: var(--color-text);
+  --pagefind-ui-background: var(--color-bg);
+  --pagefind-ui-border: var(--color-border);
+  --pagefind-ui-tag: var(--color-surface);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: var(--radius-md);
+  --pagefind-ui-font: var(--font-sans);
+  font-family: var(--font-sans);
+}
+
+.pagefind-ui__search-input {
+  background: var(--color-bg-subtle) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+  border-radius: var(--radius-md) !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--text-base) !important;
+  padding: var(--space-3) var(--space-4) !important;
+  width: 100% !important;
+}
+
+.pagefind-ui__search-input:focus {
+  outline: 2px solid var(--color-accent) !important;
+  outline-offset: 2px !important;
+  border-color: var(--color-accent) !important;
+}
+
+.pagefind-ui__search-clear {
+  color: var(--color-text-muted) !important;
+  background: none !important;
+}
+
+.pagefind-ui__results-area {
+  margin-top: var(--space-6) !important;
+}
+
+.pagefind-ui__result {
+  border-top: 1px solid var(--color-border) !important;
+  padding: var(--space-4) 0 !important;
+}
+
+.pagefind-ui__result-title a {
+  color: var(--color-accent) !important;
+  font-weight: 600 !important;
+  font-size: var(--text-lg) !important;
+  text-decoration: none !important;
+}
+
+.pagefind-ui__result-title a:hover {
+  color: var(--color-accent-hover) !important;
+  text-decoration: underline !important;
+}
+
+.pagefind-ui__result-excerpt {
+  color: var(--color-text-muted) !important;
+  font-size: var(--text-sm) !important;
+  margin-top: var(--space-1) !important;
+}
+
+.pagefind-ui__result-tags {
+  display: none !important;
+}
+
+.pagefind-ui__message {
+  color: var(--color-text-muted) !important;
+  font-size: var(--text-sm) !important;
+}
+
+.search-unavailable {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  padding: var(--space-4) 0;
+}

@@ -1,0 +1,96 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  seriesPosts: CollectionEntry<'blog'>[];
+  currentSlug: string;
+  seriesName: string;
+}
+
+const { seriesPosts, currentSlug, seriesName } = Astro.props;
+---
+
+{seriesPosts.length > 1 && (
+  <aside class="series-nav" aria-label={`Series: ${seriesName}`}>
+    <p class="series-label">
+      <span class="series-badge">Series</span>
+      {seriesName}
+    </p>
+    <ol class="series-list">
+      {seriesPosts.map((post, i) => (
+        <li class:list={['series-item', { current: post.slug === currentSlug }]}>
+          {post.slug === currentSlug ? (
+            <span class="series-current">
+              {i + 1}. {post.data.title}
+            </span>
+          ) : (
+            <a href={`/blog/${post.slug}`} class="series-link">
+              {i + 1}. {post.data.title}
+            </a>
+          )}
+        </li>
+      ))}
+    </ol>
+  </aside>
+)}
+
+<style>
+  .series-nav {
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+
+  .series-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .series-badge {
+    background: var(--color-accent);
+    color: #fff;
+    padding: 1px var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .series-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .series-item {
+    font-size: var(--text-sm);
+  }
+
+  .series-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+
+  .series-link:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+  }
+
+  .series-current {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+</style>

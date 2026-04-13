@@ -1,0 +1,89 @@
+---
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
+import JsonLd from '@components/JsonLd.astro';
+import { SITE } from '@lib/config';
+import '@styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+  schema?: Record<string, unknown>;
+  ogType?: 'website' | 'article';
+}
+
+const {
+  title,
+  description = SITE.description,
+  ogImage,
+  canonicalUrl,
+  schema,
+  ogType = 'website',
+} = Astro.props;
+
+const canonical = canonicalUrl ?? new URL(Astro.url.pathname, SITE.url).href;
+const ogImg = ogImage
+  ? new URL(ogImage, SITE.url).href
+  : new URL(SITE.defaultOgImage, SITE.url).href;
+
+const fullTitle = `${title} | ${SITE.title}`;
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <!-- Theme init: must run before any paint to prevent FOUC -->
+    <script is:inline>
+      (function () {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = saved ?? (prefersDark ? 'dark' : 'light');
+      })();
+    </script>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary SEO -->
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImg} />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    {SITE.author.twitter && <meta name="twitter:site" content={SITE.author.twitter} />}
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImg} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Page-specific head content -->
+    <slot name="head" />
+
+    <!-- JSON-LD -->
+    {schema && <JsonLd schema={schema} />}
+  </head>
+
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

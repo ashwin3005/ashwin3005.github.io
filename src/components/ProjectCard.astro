@@ -1,0 +1,100 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, description, tags, githubUrl, liveUrl } = project.data;
+---
+
+<article class="project-card">
+  <h3 class="project-title">{title}</h3>
+  <p class="project-desc">{description}</p>
+
+  {tags.length > 0 && (
+    <div class="project-tags">
+      {tags.map(tag => (
+        <span class="tag">{tag}</span>
+      ))}
+    </div>
+  )}
+
+  <div class="project-links">
+    {githubUrl && (
+      <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="project-link">
+        GitHub &nearr;
+      </a>
+    )}
+    {liveUrl && (
+      <a href={liveUrl} target="_blank" rel="noopener noreferrer" class="project-link">
+        Live &nearr;
+      </a>
+    )}
+  </div>
+</article>
+
+<style>
+  .project-card {
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    transition: border-color var(--transition);
+  }
+
+  .project-card:hover {
+    border-color: var(--color-accent);
+  }
+
+  .project-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .project-desc {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .project-tags .tag {
+    cursor: default;
+  }
+
+  .project-tags .tag:hover {
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    border-color: var(--color-border);
+  }
+
+  .project-links {
+    display: flex;
+    gap: var(--space-4);
+    margin-top: auto;
+  }
+
+  .project-link {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+
+  .project-link:hover {
+    color: var(--color-accent-hover);
+  }
+</style>

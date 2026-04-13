@@ -1,0 +1,25 @@
+---
+---
+<div id="search" class="search-wrapper" role="search" aria-label="Search posts">
+</div>
+
+<script>
+  async function initSearch() {
+    // @ts-ignore — pagefind is generated at build time
+    const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+    new PagefindUI({
+      element: '#search',
+      showImages: false,
+      showEmptyFilters: false,
+      resetStyles: true,
+      excerptLength: 30,
+    });
+  }
+
+  initSearch().catch(() => {
+    const el = document.getElementById('search');
+    if (el) {
+      el.innerHTML = '<p class="search-unavailable">Search available after build. Run <code>npm run build</code>.</p>';
+    }
+  });
+</script>
