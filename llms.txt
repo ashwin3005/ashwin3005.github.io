@@ -1,0 +1,15 @@
+# Ashwin — Personal Blog & Portfolio
+
+> A personal blog covering dev/tech topics: systems programming, web development, open source, and more.
+
+## Blog
+- [Blog](https://ashwin3005.github.io/blog): All posts, searchable by tag.
+
+## Projects
+- [Projects](https://ashwin3005.github.io/projects): Personal and open-source projects.
+
+## About
+- [About](https://ashwin3005.github.io/about): Background, skills, and bio.
+
+## Contact
+- [Contact](https://ashwin3005.github.io/contact): Ways to get in touch.
