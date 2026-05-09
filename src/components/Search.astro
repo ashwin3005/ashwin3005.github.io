@@ -3,9 +3,8 @@
 <div id="search" class="search-wrapper" role="search" aria-label="Search posts">
 </div>
 
-<script>
+<script is:inline>
   async function initSearch() {
-    // @ts-ignore — pagefind is generated at build time
     const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
     new PagefindUI({
       element: '#search',

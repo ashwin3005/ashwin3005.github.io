@@ -6,7 +6,7 @@ const year = new Date().getFullYear();
 const socials = [
   { href: SITE.author.github, label: 'GitHub', show: !!SITE.author.github },
   { href: SITE.author.linkedin, label: 'LinkedIn', show: !!SITE.author.linkedin },
-  { href: SITE.author.twitter ? `https://twitter.com/${SITE.author.twitter.replace('@', '')}` : '', label: 'Twitter', show: !!SITE.author.twitter },
+  { href: SITE.author.twitter ? `https://x.com/${SITE.author.twitter.replace('@', '')}` : '', label: 'Twitter / X', show: !!SITE.author.twitter },
 ].filter(s => s.show);
 ---
 
