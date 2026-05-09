@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "build": "astro build && npx pagefind --site dist --output-path dist/pagefind",
     "preview": "astro preview",
-    "deploy": "npm run build && gh-pages -d dist",
+    "deploy": "npm run build && gh-pages -d dist --dotfiles",
     "astro": "astro"
   },
   "dependencies": {
