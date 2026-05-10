@@ -1,0 +1,88 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PaperCard from '@components/PaperCard.astro';
+
+export async function getStaticPaths() {
+  const papers = await getCollection('papers', ({ data }) => !data.draft);
+  const tags = [...new Set(papers.flatMap(p => p.data.tags))];
+  return tags.map(tag => ({
+    params: { tag },
+    props: { tag, papers: papers.filter(p => p.data.tags.includes(tag)) },
+  }));
+}
+
+const { tag, papers } = Astro.props;
+const sorted = papers.sort((a: any, b: any) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout
+  title={`#${tag} — Papers`}
+  description={`Papers tagged #${tag}.`}
+>
+  <div class="container tag-page">
+    <header class="page-header">
+      <div class="title-row">
+        <span class="prompt" aria-hidden="true">❯</span>
+        <h1 class="page-title">papers / <span class="tag-name">#{tag}</span></h1>
+      </div>
+      <p class="page-desc">{sorted.length} paper{sorted.length !== 1 ? 's' : ''}</p>
+    </header>
+
+    <div class="paper-list">
+      {sorted.map((paper: any) => <PaperCard paper={paper} />)}
+    </div>
+
+    <div class="back-row">
+      <a href="/papers" class="back-link">← all papers</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .tag-page {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .page-header { margin-bottom: var(--space-8); }
+
+  .title-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+
+  .prompt {
+    color: var(--color-accent);
+    font-size: var(--text-2xl);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .page-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+  }
+
+  .tag-name { color: var(--color-accent); }
+
+  .page-desc {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .back-row {
+    margin-top: var(--space-8);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .back-link {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+  .back-link:hover { color: var(--color-text); }
+</style>

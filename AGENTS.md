@@ -35,6 +35,7 @@ All content lives in `src/content/`. The schemas are defined in `src/content/con
 
 **Blog posts** → `src/content/blog/*.md`
 **Projects** → `src/content/projects/*.md`
+**Papers** → `src/content/papers/*.md`
 
 The filename becomes the URL slug (no manual slug field needed).
 
@@ -46,6 +47,9 @@ The filename becomes the URL slug (no manual slug field needed).
 | `/blog` | `src/pages/blog/index.astro` |
 | `/blog/[slug]` | `src/pages/blog/[...slug].astro` |
 | `/blog/tag/[tag]` | `src/pages/blog/tag/[tag].astro` |
+| `/papers` | `src/pages/papers/index.astro` |
+| `/papers/[slug]` | `src/pages/papers/[...slug].astro` |
+| `/papers/tag/[tag]` | `src/pages/papers/tag/[tag].astro` |
 | `/projects` | `src/pages/projects/index.astro` |
 | `/about` | `src/pages/about.astro` |
 | `/contact` | `src/pages/contact.astro` |
@@ -115,6 +119,24 @@ ogImage: string         # optional — path relative to /public (e.g. "/images/p
 ```
 
 **`draft: true` posts are completely invisible** — they are filtered out in `getStaticPaths` and `getCollection` calls before any page is built. They do not appear on listings, tag pages, or in the search index.
+
+## Paper Frontmatter Schema
+
+```yaml
+title: string           # required — full paper title
+authors: string         # optional — e.g. "Vaswani et al."
+year: number            # optional — publication year
+venue: string           # optional — e.g. "NeurIPS 2023" or "arXiv"
+url: string             # optional — link to the actual paper (must be valid URL)
+tags: string[]          # optional, default [] — topic tags (e.g. ["transformer", "nlp"])
+pubDate: date           # required — date I read it (YYYY-MM-DD)
+tldr: string            # optional — one-line summary shown in the listing and as a callout
+draft: boolean          # optional, default false
+```
+
+The filename becomes the URL slug: `src/content/papers/attention-is-all-you-need.md` → `/papers/attention-is-all-you-need`.
+
+The Markdown body is the full reading notes, rendered as prose on the individual paper page. Tag pages are generated statically at `/papers/tag/[tag]`.
 
 ## Project Frontmatter Schema
 

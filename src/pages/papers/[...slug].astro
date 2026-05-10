@@ -1,0 +1,140 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { formatDate } from '@lib/utils';
+import '@styles/prose.css';
+
+export async function getStaticPaths() {
+  const papers = await getCollection('papers', ({ data }) => !data.draft);
+  return papers.map(paper => ({
+    params: { slug: paper.slug },
+    props: { paper },
+  }));
+}
+
+const { paper } = Astro.props;
+const { Content } = await paper.render();
+const { title, authors, year, venue, url, tags, pubDate, tldr } = paper.data;
+
+const meta = [
+  authors,
+  venue && year ? `${venue} ${year}` : (venue ?? (year ? String(year) : '')),
+].filter(Boolean).join(' · ');
+---
+
+<BaseLayout
+  title={title}
+  description={tldr ?? `Notes on "${title}"`}
+>
+  <div class="container paper-page">
+
+    <header class="paper-header">
+      <h1 class="paper-title">{title}</h1>
+
+      <div class="paper-meta">
+        {meta && <span class="meta-item">{meta}</span>}
+        <span class="meta-item">
+          read <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        </span>
+        {url && (
+          <a href={url} target="_blank" rel="noopener noreferrer" class="paper-link">
+            read paper ↗
+          </a>
+        )}
+      </div>
+
+      {tags.length > 0 && (
+        <div class="paper-tags">
+          {tags.map(tag => (
+            <a href={`/papers/tag/${tag}`} class="tag">{tag}</a>
+          ))}
+        </div>
+      )}
+
+      {tldr && <p class="tldr"><strong>tl;dr</strong> — {tldr}</p>}
+    </header>
+
+    <article class="prose" data-pagefind-body>
+      <h1 data-pagefind-meta="title" style="display:none">{title}</h1>
+      <Content />
+    </article>
+
+    <footer class="paper-footer">
+      <a href="/papers" class="back-link">← all papers</a>
+    </footer>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .paper-page {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .paper-header {
+    max-width: var(--max-width-prose);
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .paper-title {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--space-4);
+  }
+
+  .paper-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+    font-family: var(--font-mono);
+  }
+
+  .paper-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-size: var(--text-sm);
+  }
+  .paper-link:hover { color: var(--color-accent-hover); }
+
+  .paper-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .tldr {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    padding: var(--space-3) var(--space-4);
+    border-left: 2px solid var(--color-accent);
+    margin-top: var(--space-4);
+  }
+
+  .paper-footer {
+    max-width: var(--max-width-prose);
+    margin-top: var(--space-12);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .back-link {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+  .back-link:hover { color: var(--color-text); }
+
+  @media (max-width: 640px) {
+    .paper-title { font-size: var(--text-2xl); }
+  }
+</style>

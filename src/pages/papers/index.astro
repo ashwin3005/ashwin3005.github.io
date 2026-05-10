@@ -1,0 +1,101 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PaperCard from '@components/PaperCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPapers = await getCollection('papers', ({ data }) => !data.draft);
+const papers = allPapers.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const allTags = [...new Set(papers.flatMap(p => p.data.tags))].sort();
+---
+
+<BaseLayout
+  title="Papers"
+  description="Research papers I've read with notes and takeaways."
+>
+  <div class="container papers-page">
+
+    <header class="page-header">
+      <div class="title-row">
+        <span class="prompt" aria-hidden="true">❯</span>
+        <h1 class="page-title">papers</h1>
+        <span class="count">{papers.length} read</span>
+      </div>
+      <p class="page-desc">
+        Research papers I've read. Short notes on what I found interesting or useful.
+      </p>
+    </header>
+
+    {allTags.length > 0 && (
+      <div class="tag-list" aria-label="Filter by topic">
+        {allTags.map(tag => (
+          <a href={`/papers/tag/${tag}`} class="tag">{tag}</a>
+        ))}
+      </div>
+    )}
+
+    <div class="paper-list" aria-label="Papers">
+      {papers.length > 0
+        ? papers.map(paper => <PaperCard paper={paper} />)
+        : <p class="empty">no papers yet.</p>
+      }
+    </div>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .papers-page {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .page-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .title-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+
+  .prompt {
+    color: var(--color-accent);
+    font-size: var(--text-2xl);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .page-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+  }
+
+  .count {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .page-desc {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    max-width: 60ch;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+    padding: var(--space-8) 0;
+  }
+</style>

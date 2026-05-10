@@ -29,4 +29,19 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { blog, projects };
+const papers = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    authors: z.string().optional(),
+    year: z.number().optional(),
+    venue: z.string().optional(),
+    url: z.string().url().optional(),
+    tags: z.array(z.string()).default([]),
+    pubDate: z.coerce.date(),        // date I read it
+    tldr: z.string().optional(),     // one-line summary
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { blog, projects, papers };
