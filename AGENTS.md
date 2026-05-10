@@ -65,6 +65,7 @@ Pure utility functions used across pages:
 - `getSeriesPosts(allPosts, seriesName)` — returns all parts of a named series sorted by `seriesPart`
 - `getAllTags(posts)` — deduplicates and sorts all tags
 - `formatDate(date)` / `formatDateShort(date)` — locale-formatted display dates
+- `formatDateISO(date)` — returns `YYYY-MM-DD` string used in post listing rows
 
 ### `src/layouts/BaseLayout.astro`
 The HTML shell every page renders inside. Handles:
@@ -84,6 +85,13 @@ Extends `BaseLayout` for blog posts. Adds:
 
 ### `src/styles/global.css`
 Design tokens as CSS custom properties on `:root`, overridden under `[data-theme="dark"]`. All colours, spacing, typography, radii, and layout widths live here. Do not hard-code values in component `<style>` blocks — always reference a token.
+
+Current design direction: terminal/minimal aesthetic. Key token decisions:
+- **Font**: single system monospace stack (`ui-monospace, 'Cascadia Code', 'Fira Code', monospace`) for everything — no Google Fonts, no separate `--font-sans` / `--font-mono` distinction in practice
+- **Accent color**: `--color-accent` is forest green (`#16a34a` light / `#4ade80` dark) — used for the `❯` prompt character, active nav links, link hovers, and interactive elements
+- **Border radius**: all radius tokens (`--radius-sm/md/lg`) are `2px` — no rounded cards
+- **Tags**: the `.tag` class uses a CSS `::before { content: '#' }` — do not add `#` in the HTML text content
+- **Section headings**: use `class="sh"` for page-level section labels (uppercase, muted, bottom border) and `class="section-label"` for within-page sections on the about page
 
 ### `astro.config.mjs`
 Critical settings:
@@ -136,7 +144,9 @@ padding: 1rem;
 
 **Component styles are scoped.** Each `.astro` component's `<style>` block is automatically scoped to that component by Astro. Global styles go only in `src/styles/`.
 
-**Dark mode is handled entirely via CSS.** The `[data-theme="dark"]` selector on `<html>` overrides all token values. Components do not need JS or class-toggling — they just use the tokens.
+**Dark mode tokens are handled entirely via CSS.** The `[data-theme="dark"]` selector on `<html>` overrides all token values. Components do not need JS or class-toggling — they just use the tokens.
+
+**Exception — `ThemeToggle.astro`** uses `is:inline` JavaScript to set the icon (☾ / ☀) on load and on click. This is intentional: Astro scopes component `<style>` blocks, so using `[data-theme="dark"]` as a parent selector inside a scoped style block is unreliable — the selector gets transformed in a way that breaks ancestor matching. Any component that needs to read the current theme must either use CSS tokens (which work fine) or read `document.documentElement.dataset.theme` in JS. Do not attempt to fix the toggle icon display with CSS `[data-theme] .something` inside a scoped `<style>` — use JS instead.
 
 **Syntax highlighting uses Shiki dual themes.** The CSS variables `--shiki-light`, `--shiki-light-bg`, `--shiki-dark`, `--shiki-dark-bg` are set by Shiki on each `<span>` in a code block. The `global.css` rules that bridge these to the `data-theme` attribute must remain intact:
 
@@ -182,6 +192,8 @@ The following are explicitly deferred and should not be added unless the user re
 **Theme init script must use `is:inline`.** The script that reads `localStorage` and sets `document.documentElement.dataset.theme` is in `BaseLayout.astro`. It uses `is:inline` so Astro does not defer or bundle it. If it runs after the first paint, users on dark mode see a flash of the light theme. Do not move it out of `<head>` or remove `is:inline`.
 
 **Pagefind's JS doesn't exist at build time.** The `import('/pagefind/pagefind-ui.js')` in `Search.astro` is externalised from Vite (see `astro.config.mjs`). It only becomes available after `pagefind` runs post-build. The search component catches the import error in dev mode and shows a "build required" message — this is intentional.
+
+**Mobile nav uses a CSS `display:none` guard, not JS injection.** The `[menu]` button in `Header.astro` exists in the HTML at all times but is `display: none` outside `@media (max-width: 560px)`. The mobile drawer (`#mobile-drawer`) starts without the `open` class and is toggled via JS. Do not use JS to inject the button into the DOM — that approach caused the button to render on desktop. Always use CSS media queries to show/hide mobile-only elements.
 
 **`site` in `astro.config.mjs` must be the full URL.** Without it, `@astrojs/sitemap` silently skips sitemap generation and canonical URLs will be wrong. It must include the protocol (`https://`) and match the deployed domain exactly.
 

@@ -5,8 +5,6 @@ import { getCollection } from 'astro:content';
 
 const allProjects = await getCollection('projects');
 const sorted = allProjects.sort((a, b) => a.data.order - b.data.order);
-const featured = sorted.filter(p => p.data.featured);
-const other = sorted.filter(p => !p.data.featured);
 ---
 
 <BaseLayout
@@ -14,32 +12,19 @@ const other = sorted.filter(p => !p.data.featured);
   description="Personal and open-source projects I've built or contributed to."
 >
   <div class="container projects-page">
+
     <header class="projects-header">
-      <h1 class="projects-title">Projects</h1>
-      <p class="projects-subtitle">Things I've built.</p>
+      <h1 class="page-title">projects</h1>
+      <span class="project-count">{sorted.length} projects</span>
     </header>
 
-    {featured.length > 0 && (
-      <section aria-labelledby="featured-heading">
-        <h2 id="featured-heading" class="section-heading">Featured</h2>
-        <div class="projects-grid">
-          {featured.map(project => <ProjectCard project={project} />)}
-        </div>
-      </section>
-    )}
+    <div class="project-list">
+      {sorted.length > 0
+        ? sorted.map(project => <ProjectCard project={project} />)
+        : <p class="empty">more projects coming soon.</p>
+      }
+    </div>
 
-    {other.length > 0 && (
-      <section aria-labelledby="other-heading" class="other-section">
-        <h2 id="other-heading" class="section-heading">Other</h2>
-        <div class="projects-grid">
-          {other.map(project => <ProjectCard project={project} />)}
-        </div>
-      </section>
-    )}
-
-    {allProjects.length === 0 && (
-      <p class="empty-state">More projects coming soon.</p>
-    )}
   </div>
 </BaseLayout>
 
@@ -50,44 +35,26 @@ const other = sorted.filter(p => !p.data.featured);
   }
 
   .projects-header {
-    margin-bottom: var(--space-10);
-  }
-
-  .projects-title {
-    font-size: var(--text-4xl);
-    font-weight: 800;
-    margin-bottom: var(--space-2);
-  }
-
-  .projects-subtitle {
-    color: var(--color-text-muted);
-    font-size: var(--text-base);
-  }
-
-  .section-heading {
-    font-size: var(--text-xs);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-text-muted);
-    margin-bottom: var(--space-4);
-    padding-bottom: var(--space-3);
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-4);
     border-bottom: 1px solid var(--color-border);
   }
 
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--space-4);
+  .page-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
   }
 
-  .other-section {
-    margin-top: var(--space-12);
-  }
-
-  .empty-state {
+  .project-count {
+    font-size: var(--text-sm);
     color: var(--color-text-muted);
-    font-size: var(--text-base);
-    padding: var(--space-12) 0;
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+    padding: var(--space-8) 0;
   }
 </style>

@@ -47,6 +47,11 @@ export function getAllTags(posts: CollectionEntry<'blog'>[]): string[] {
   return [...new Set(posts.flatMap(p => p.data.tags))].sort();
 }
 
+/** ISO date string YYYY-MM-DD for listings */
+export function formatDateISO(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
 /** Slugify a string for URL use */
 export function slugify(str: string): string {
   return str

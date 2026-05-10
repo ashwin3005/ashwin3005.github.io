@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { readingTime, formatDateShort } from '@lib/utils';
+import { formatDateISO } from '@lib/utils';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -8,26 +8,17 @@ interface Props {
 
 const { post } = Astro.props;
 const { title, description, pubDate, tags } = post.data;
-const time = readingTime(post.body);
+const isoDate = formatDateISO(pubDate);
 ---
 
-<article class="post-card">
-  <div class="post-card-meta">
-    <time datetime={pubDate.toISOString()} class="post-card-date">
-      {formatDateShort(pubDate)}
-    </time>
-    <span class="meta-sep" aria-hidden="true">·</span>
-    <span class="post-card-time">{time}</span>
+<article class="post-row">
+  <time datetime={pubDate.toISOString()} class="post-date">{isoDate}</time>
+  <div class="post-main">
+    <a href={`/blog/${post.slug}`} class="post-title">{title}</a>
+    <p class="post-desc">{description}</p>
   </div>
-
-  <h2 class="post-card-title">
-    <a href={`/blog/${post.slug}`}>{title}</a>
-  </h2>
-
-  <p class="post-card-desc">{description}</p>
-
   {tags.length > 0 && (
-    <div class="post-card-tags">
+    <div class="post-tags" aria-label="Tags">
       {tags.map(tag => (
         <a href={`/blog/tag/${tag}`} class="tag">{tag}</a>
       ))}
@@ -36,54 +27,57 @@ const time = readingTime(post.body);
 </article>
 
 <style>
-  .post-card {
-    padding: var(--space-6) 0;
+  .post-row {
+    display: grid;
+    grid-template-columns: 10ch 1fr auto;
+    align-items: start;
+    gap: 0 var(--space-6);
+    padding: var(--space-4) 0;
     border-bottom: 1px solid var(--color-border);
   }
 
-  .post-card:last-child {
-    border-bottom: none;
-  }
-
-  .post-card-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
+  .post-date {
     font-size: var(--text-xs);
     color: var(--color-text-muted);
-    font-family: var(--font-mono);
-    margin-bottom: var(--space-2);
+    padding-top: 3px;
+    white-space: nowrap;
   }
 
-  .meta-sep { color: var(--color-border); }
-
-  .post-card-title {
-    font-size: var(--text-xl);
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: var(--space-2);
+  .post-main {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
   }
 
-  .post-card-title a {
+  .post-title {
+    font-size: var(--text-base);
+    font-weight: 600;
     color: var(--color-text);
     text-decoration: none;
-    transition: color var(--transition);
+    line-height: 1.4;
   }
+  .post-title:hover { color: var(--color-accent); text-decoration: none; }
 
-  .post-card-title a:hover {
-    color: var(--color-accent);
-  }
-
-  .post-card-desc {
-    color: var(--color-text-muted);
+  .post-desc {
     font-size: var(--text-sm);
-    line-height: 1.6;
-    margin-bottom: var(--space-3);
+    color: var(--color-text-muted);
+    line-height: 1.5;
   }
 
-  .post-card-tags {
+  .post-tags {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
+    flex-direction: column;
+    gap: 3px;
+    align-items: flex-end;
+    padding-top: 3px;
+  }
+
+  @media (max-width: 580px) {
+    .post-row {
+      grid-template-columns: 1fr;
+    }
+    .post-date { order: 2; padding-top: var(--space-1); }
+    .post-main { order: 1; }
+    .post-tags { display: none; }
   }
 </style>

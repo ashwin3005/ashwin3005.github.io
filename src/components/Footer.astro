@@ -3,30 +3,25 @@ import { SITE } from '@lib/config';
 
 const year = new Date().getFullYear();
 
-const socials = [
-  { href: SITE.author.github, label: 'GitHub', show: !!SITE.author.github },
-  { href: SITE.author.linkedin, label: 'LinkedIn', show: !!SITE.author.linkedin },
-  { href: SITE.author.twitter ? `https://x.com/${SITE.author.twitter.replace('@', '')}` : '', label: 'Twitter / X', show: !!SITE.author.twitter },
-].filter(s => s.show);
+const links = [
+  { href: SITE.author.github,                              label: 'github',   show: !!SITE.author.github   },
+  { href: `https://x.com/${SITE.author.twitter}`,         label: 'x',        show: !!SITE.author.twitter  },
+  { href: SITE.author.linkedin,                           label: 'linkedin', show: !!SITE.author.linkedin },
+  { href: `mailto:${SITE.author.email}`,                  label: 'email',    show: !!SITE.author.email    },
+].filter(l => l.show);
 ---
 
 <footer class="site-footer" data-pagefind-ignore>
   <div class="container footer-inner">
-    <p class="footer-copy">
-      &copy; {year} {SITE.author.name}
-    </p>
-    {socials.length > 0 && (
-      <nav aria-label="Social links" class="footer-socials">
-        {socials.map(s => (
-          <a href={s.href} target="_blank" rel="noopener noreferrer" class="footer-link">
-            {s.label}
-          </a>
-        ))}
-      </nav>
-    )}
-    <p class="footer-built">
-      Built with <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
-    </p>
+    <span class="copy">© {year} {SITE.author.name}</span>
+    {links.map(l => (
+      <a
+        href={l.href}
+        target={l.href.startsWith('mailto') ? undefined : '_blank'}
+        rel={l.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+        class="flink"
+      >{l.label}</a>
+    ))}
   </div>
 </footer>
 
@@ -40,40 +35,30 @@ const socials = [
   .footer-inner {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--space-4);
     flex-wrap: wrap;
-  }
-
-  .footer-copy,
-  .footer-built {
-    color: var(--color-text-muted);
-    font-size: var(--text-sm);
-  }
-
-  .footer-built a {
-    color: var(--color-text-muted);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .footer-built a:hover {
-    color: var(--color-accent);
-  }
-
-  .footer-socials {
-    display: flex;
     gap: var(--space-4);
-  }
-
-  .footer-link {
-    color: var(--color-text-muted);
     font-size: var(--text-sm);
-    text-decoration: none;
-    transition: color var(--transition);
+    color: var(--color-text-muted);
   }
 
-  .footer-link:hover {
-    color: var(--color-accent);
+  .copy { color: var(--color-text-muted); }
+
+  .copy::after {
+    content: ' ·';
+    margin-left: var(--space-2);
+    color: var(--color-border);
   }
+
+  /* add · separator between links */
+  .flink + .flink::before {
+    content: '·';
+    margin-right: var(--space-4);
+    color: var(--color-border);
+  }
+
+  .flink {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+  .flink:hover { color: var(--color-accent); text-decoration: none; }
 </style>

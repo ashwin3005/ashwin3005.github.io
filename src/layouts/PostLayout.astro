@@ -132,9 +132,9 @@ const postSchema = {
   .meta-sep { color: var(--color-border); }
 
   .post-title {
-    font-size: var(--text-4xl);
-    font-weight: 800;
-    line-height: 1.15;
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    line-height: 1.2;
     color: var(--color-text);
     margin-bottom: var(--space-4);
   }
@@ -180,12 +180,8 @@ const postSchema = {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     text-decoration: none;
-    transition: color var(--transition);
   }
-
-  .back-link:hover {
-    color: var(--color-accent);
-  }
+  .back-link:hover { color: var(--color-text); }
 
   @media (max-width: 640px) {
     .post-title { font-size: var(--text-3xl); }

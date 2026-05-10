@@ -1,12 +1,11 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
-import { SITE } from '@lib/config';
 
 const navLinks = [
-  { href: '/blog', label: 'Blog' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/blog',     label: 'blog'     },
+  { href: '/projects', label: 'projects' },
+  { href: '/about',    label: 'about'    },
+  { href: '/contact',  label: 'contact'  },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -14,10 +13,8 @@ const currentPath = Astro.url.pathname;
 
 <header class="site-header" data-pagefind-ignore>
   <div class="container header-inner">
-    <a href="/" class="site-title" aria-label="Home">{SITE.title}</a>
-
-    <!-- Desktop nav -->
-    <nav aria-label="Main navigation" class="nav-desktop">
+    <nav class="nav" aria-label="Main navigation">
+      <a href="/" class="home-link" aria-label="Home">~/</a>
       {navLinks.map(link => (
         <a
           href={link.href}
@@ -26,33 +23,25 @@ const currentPath = Astro.url.pathname;
           {link.label}
         </a>
       ))}
+      <!-- mobile-only toggle, hidden on desktop via CSS -->
+      <button class="menu-btn" id="menu-btn" aria-label="Toggle navigation" aria-expanded="false">
+        [menu]
+      </button>
     </nav>
-
-    <div class="header-actions">
-      <ThemeToggle />
-
-      <!-- Mobile nav toggle -->
-      <details class="nav-mobile-wrapper">
-        <summary aria-label="Open navigation menu" class="nav-mobile-toggle">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-        </summary>
-        <nav aria-label="Mobile navigation" class="nav-mobile">
-          {navLinks.map(link => (
-            <a
-              href={link.href}
-              class:list={['nav-mobile-link', { active: currentPath.startsWith(link.href) }]}
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-      </details>
-    </div>
+    <ThemeToggle />
   </div>
+
+  <!-- mobile drawer, hidden by default -->
+  <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    {navLinks.map(link => (
+      <a
+        href={link.href}
+        class:list={['drawer-link', { active: currentPath.startsWith(link.href) }]}
+      >
+        {link.label}
+      </a>
+    ))}
+  </nav>
 </header>
 
 <style>
@@ -62,121 +51,97 @@ const currentPath = Astro.url.pathname;
     z-index: 100;
     background: var(--color-bg);
     border-bottom: 1px solid var(--color-border);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+    transition: background-color var(--transition);
   }
 
   .header-inner {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
-    height: 60px;
+    justify-content: space-between;
+    height: 44px;
   }
 
-  .site-title {
-    font-family: var(--font-mono);
-    font-size: var(--text-lg);
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .home-link {
     font-weight: 700;
-    color: var(--color-text);
+    color: var(--color-accent);
     text-decoration: none;
+    letter-spacing: -0.01em;
     flex-shrink: 0;
   }
-
-  .site-title:hover {
-    color: var(--color-accent);
-  }
-
-  /* Desktop nav */
-  .nav-desktop {
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    flex: 1;
-  }
+  .home-link:hover { color: var(--color-accent-hover); }
 
   .nav-link {
-    padding: var(--space-2) var(--space-3);
     color: var(--color-text-muted);
-    font-size: var(--text-sm);
-    border-radius: var(--radius-md);
     text-decoration: none;
-    transition: color var(--transition), background var(--transition);
+    font-size: var(--text-sm);
+    transition: color var(--transition);
   }
+  .nav-link:hover { color: var(--color-accent); }
+  .nav-link.active { color: var(--color-accent); }
 
-  .nav-link:hover,
-  .nav-link.active {
-    color: var(--color-text);
-    background: var(--color-surface);
-  }
-
-  .nav-link.active {
-    font-weight: 600;
-  }
-
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    margin-left: auto;
-  }
-
-  /* Mobile nav */
-  .nav-mobile-wrapper {
+  /* mobile toggle — hidden on desktop */
+  .menu-btn {
     display: none;
-  }
-
-  .nav-mobile-toggle {
-    list-style: none;
+    background: none;
+    border: none;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
     color: var(--color-text-muted);
-    transition: color var(--transition), background var(--transition);
+    padding: 0;
   }
+  .menu-btn:hover { color: var(--color-accent); }
 
-  .nav-mobile-toggle::-webkit-details-marker { display: none; }
-
-  .nav-mobile-toggle:hover {
-    color: var(--color-text);
-    background: var(--color-surface);
-  }
-
-  .nav-mobile {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
-    padding: var(--space-4) var(--space-6);
-    display: flex;
+  /* mobile drawer — hidden by default */
+  .mobile-drawer {
+    display: none;
     flex-direction: column;
     gap: var(--space-1);
+    padding: var(--space-3) var(--space-8) var(--space-4);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+  .mobile-drawer.open {
+    display: flex;
   }
 
-  .nav-mobile-link {
-    padding: var(--space-3) var(--space-3);
-    color: var(--color-text-muted);
+  .drawer-link {
     font-size: var(--text-base);
-    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
     text-decoration: none;
-    transition: color var(--transition), background var(--transition);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .drawer-link:last-child { border-bottom: none; }
+  .drawer-link:hover,
+  .drawer-link.active { color: var(--color-accent); }
+
+  /* on mobile: hide desktop links, show toggle button */
+  @media (max-width: 560px) {
+    .nav-link { display: none; }
+    .menu-btn { display: inline; }
   }
 
-  .nav-mobile-link:hover,
-  .nav-mobile-link.active {
-    color: var(--color-text);
-    background: var(--color-surface);
-  }
-
-  @media (max-width: 640px) {
-    .nav-desktop { display: none; }
-    .nav-mobile-wrapper { display: block; }
+  @media (min-width: 561px) {
+    .mobile-drawer { display: none !important; }
   }
 </style>
+
+<script>
+  const btn = document.getElementById('menu-btn');
+  const drawer = document.getElementById('mobile-drawer');
+
+  btn?.addEventListener('click', () => {
+    const isOpen = drawer?.classList.contains('open');
+    drawer?.classList.toggle('open', !isOpen);
+    btn.textContent = isOpen ? '[menu]' : '[close]';
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    drawer?.setAttribute('aria-hidden', String(isOpen));
+  });
+</script>

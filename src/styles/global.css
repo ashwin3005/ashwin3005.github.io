@@ -1,84 +1,74 @@
 /* ============================================================
-   Design tokens
+   Tokens
    ============================================================ */
 :root {
-  /* Colors — light */
-  --color-bg:           #ffffff;
-  --color-bg-subtle:    #f5f5f5;
-  --color-surface:      #ebebeb;
-  --color-border:       #d4d4d4;
-  --color-text:         #171717;
-  --color-text-muted:   #525252;
-  --color-accent:       #2563eb;
-  --color-accent-hover: #1d4ed8;
+  --color-bg:           #fafaf8;
+  --color-bg-subtle:    #f0f0ed;
+  --color-surface:      #e8e8e4;
+  --color-border:       #ddd;
+  --color-text:         #111;
+  --color-text-muted:   #555;
+  --color-accent:       #16a34a;
+  --color-accent-hover: #15803d;
 
-  /* Typography */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'Roboto Mono', 'Fira Code', ui-monospace, monospace;
+  --font-sans: ui-monospace, 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
 
-  /* Type scale */
-  --text-xs:   0.75rem;
-  --text-sm:   0.875rem;
-  --text-base: 1rem;
-  --text-lg:   1.125rem;
+  --text-xs:   0.72rem;
+  --text-sm:   0.84rem;
+  --text-base: 0.9375rem;
+  --text-lg:   1.05rem;
   --text-xl:   1.25rem;
   --text-2xl:  1.5rem;
-  --text-3xl:  1.875rem;
-  --text-4xl:  2.25rem;
+  --text-3xl:  2rem;
+  --text-4xl:  2.4rem;
 
-  /* Spacing */
-  --space-1:  0.25rem;
-  --space-2:  0.5rem;
-  --space-3:  0.75rem;
-  --space-4:  1rem;
-  --space-6:  1.5rem;
-  --space-8:  2rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  10px;
+  --space-4:  16px;
+  --space-6:  20px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
 
-  /* Radii */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
 
-  /* Layout */
   --max-width-prose: 68ch;
-  --max-width-wide:  1100px;
+  --max-width-wide:  860px;
 
-  /* Motion */
-  --transition: 150ms ease;
+  --transition: 120ms ease;
 }
 
-/* Dark mode overrides */
 [data-theme="dark"] {
-  --color-bg:           #0a0a0a;
-  --color-bg-subtle:    #171717;
-  --color-surface:      #262626;
-  --color-border:       #404040;
-  --color-text:         #fafafa;
-  --color-text-muted:   #a3a3a3;
-  --color-accent:       #60a5fa;
-  --color-accent-hover: #93c5fd;
+  --color-bg:           #0c0c0c;
+  --color-bg-subtle:    #161616;
+  --color-surface:      #1f1f1f;
+  --color-border:       #2a2a2a;
+  --color-text:         #e8e8e8;
+  --color-text-muted:   #777;
+  --color-accent:       #4ade80;
+  --color-accent-hover: #86efac;
 }
 
 /* ============================================================
-   Shiki dual-theme code blocks
+   Shiki
    ============================================================ */
 :root .astro-code,
 :root .astro-code span {
   color: var(--shiki-light);
   background-color: var(--shiki-light-bg);
 }
-
 [data-theme="dark"] .astro-code,
 [data-theme="dark"] .astro-code span {
   color: var(--shiki-dark);
   background-color: var(--shiki-dark-bg);
 }
-
 .astro-code {
   padding: var(--space-4);
-  border-radius: var(--radius-md);
   overflow-x: auto;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
@@ -87,16 +77,12 @@
 }
 
 /* ============================================================
-   Reset & base
+   Reset
    ============================================================ */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-  font-size: 16px;
+  font-size: 15px;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
@@ -104,40 +90,29 @@ html {
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--color-text);
-  background-color: var(--color-bg);
-  transition: background-color var(--transition), color var(--transition);
+  background: var(--color-bg);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: background-color var(--transition), color var(--transition);
 }
 
-main {
-  flex: 1;
-}
+main { flex: 1; }
 
-img, video {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
+img, video { max-width: 100%; height: auto; display: block; }
 
 a {
-  color: var(--color-accent);
-  text-decoration: none;
-  transition: color var(--transition);
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
+a:hover { color: var(--color-accent); text-decoration: underline; }
 
-a:hover {
-  color: var(--color-accent-hover);
-}
-
-/* Focus visible — keyboard nav */
 :focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
+  outline: 1px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 /* ============================================================
@@ -150,43 +125,56 @@ a:hover {
   z-index: 9999;
   padding: var(--space-2) var(--space-4);
   background: var(--color-accent);
-  color: #fff;
-  border-radius: var(--radius-md);
-  font-weight: 600;
+  color: var(--color-bg);
+  text-decoration: none;
 }
-
-.skip-link:focus {
-  left: var(--space-4);
-}
+.skip-link:focus { left: var(--space-4); }
 
 /* ============================================================
-   Container utility
+   Container
    ============================================================ */
 .container {
   width: 100%;
   max-width: var(--max-width-wide);
   margin-inline: auto;
-  padding-inline: var(--space-6);
+  padding-inline: var(--space-8);
+}
+
+@media (max-width: 600px) {
+  .container { padding-inline: var(--space-4); }
 }
 
 /* ============================================================
-   Tag pill utility
+   Tag — #prefixed, muted, no border
    ============================================================ */
 .tag {
-  display: inline-block;
-  padding: 2px var(--space-2);
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  display: inline;
   font-size: var(--text-xs);
   font-family: var(--font-mono);
+  color: var(--color-text-muted);
   text-decoration: none;
-  transition: background var(--transition), color var(--transition);
+}
+.tag::before { content: '#'; }
+.tag:hover { color: var(--color-accent); text-decoration: none; }
+
+/* ============================================================
+   Section heading
+   ============================================================ */
+.sh {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 6px;
+  margin-bottom: var(--space-4);
 }
 
-.tag:hover {
-  background: var(--color-accent);
-  color: #fff;
-  border-color: var(--color-accent);
+/* ============================================================
+   Blink cursor
+   ============================================================ */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
