@@ -14,7 +14,7 @@ const sorted = allProjects.sort((a, b) => a.data.order - b.data.order);
   <div class="container projects-page">
 
     <header class="projects-header">
-      <h1 class="page-title">projects</h1>
+      <h1 class="page-title">Projects</h1>
       <span class="project-count">{sorted.length} projects</span>
     </header>
 
@@ -44,8 +44,9 @@ const sorted = allProjects.sort((a, b) => a.data.order - b.data.order);
   }
 
   .page-title {
-    font-size: var(--text-2xl);
-    font-weight: 700;
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 
   .project-count {

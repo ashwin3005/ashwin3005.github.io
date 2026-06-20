@@ -27,10 +27,7 @@ const skills = [
   <div class="container about-page">
 
     <header class="page-header">
-      <div class="title-row">
-        <span class="prompt" aria-hidden="true">❯</span>
-        <h1 class="page-title">about</h1>
-      </div>
+      <h1 class="page-title">About</h1>
     </header>
 
     <div class="about-body">
@@ -79,22 +76,10 @@ const skills = [
 
   .page-header { margin-bottom: var(--space-12); }
 
-  .title-row {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-2);
-  }
-
-  .prompt {
-    color: var(--color-accent);
-    font-size: var(--text-2xl);
-    line-height: 1;
-    user-select: none;
-  }
-
   .page-title {
-    font-size: var(--text-2xl);
-    font-weight: 700;
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 
   .about-body {

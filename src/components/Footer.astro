@@ -1,34 +1,21 @@
 ---
 import { SITE } from '@lib/config';
+import SocialLinks from './SocialLinks.astro';
 
 const year = new Date().getFullYear();
-
-const links = [
-  { href: SITE.author.github,                              label: 'github',   show: !!SITE.author.github   },
-  { href: `https://x.com/${SITE.author.twitter}`,         label: 'x',        show: !!SITE.author.twitter  },
-  { href: SITE.author.linkedin,                           label: 'linkedin', show: !!SITE.author.linkedin },
-  { href: `mailto:${SITE.author.email}`,                  label: 'email',    show: !!SITE.author.email    },
-].filter(l => l.show);
 ---
 
 <footer class="site-footer" data-pagefind-ignore>
   <div class="container footer-inner">
+    <SocialLinks size="md" />
     <span class="copy">© {year} {SITE.author.name}</span>
-    {links.map(l => (
-      <a
-        href={l.href}
-        target={l.href.startsWith('mailto') ? undefined : '_blank'}
-        rel={l.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
-        class="flink"
-      >{l.label}</a>
-    ))}
   </div>
 </footer>
 
 <style>
   .site-footer {
     border-top: 1px solid var(--color-border);
-    padding: var(--space-8) 0;
+    padding: var(--space-10) 0;
     margin-top: var(--space-16);
   }
 
@@ -36,29 +23,12 @@ const links = [
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: var(--space-4);
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+
+  .copy {
     font-size: var(--text-sm);
     color: var(--color-text-muted);
   }
-
-  .copy { color: var(--color-text-muted); }
-
-  .copy::after {
-    content: ' ·';
-    margin-left: var(--space-2);
-    color: var(--color-border);
-  }
-
-  /* add · separator between links */
-  .flink + .flink::before {
-    content: '·';
-    margin-right: var(--space-4);
-    color: var(--color-border);
-  }
-
-  .flink {
-    color: var(--color-text-muted);
-    text-decoration: none;
-  }
-  .flink:hover { color: var(--color-accent); text-decoration: none; }
 </style>

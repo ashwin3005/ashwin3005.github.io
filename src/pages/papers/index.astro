@@ -17,8 +17,7 @@ const allTags = [...new Set(papers.flatMap(p => p.data.tags))].sort();
 
     <header class="page-header">
       <div class="title-row">
-        <span class="prompt" aria-hidden="true">❯</span>
-        <h1 class="page-title">papers</h1>
+        <h1 class="page-title">Papers</h1>
         <span class="count">{papers.length} read</span>
       </div>
       <p class="page-desc">
@@ -61,16 +60,10 @@ const allTags = [...new Set(papers.flatMap(p => p.data.tags))].sort();
     margin-bottom: var(--space-3);
   }
 
-  .prompt {
-    color: var(--color-accent);
-    font-size: var(--text-2xl);
-    line-height: 1;
-    user-select: none;
-  }
-
   .page-title {
-    font-size: var(--text-2xl);
-    font-weight: 700;
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 
   .count {

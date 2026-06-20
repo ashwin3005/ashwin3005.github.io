@@ -1,0 +1,64 @@
+---
+---
+<button id="font-toggle" aria-label="Toggle font" title="Toggle font" class="font-toggle">
+  <!-- "Aa" rendered in the font you'll switch TO -->
+  <span class="aa aa-mono" aria-hidden="true">Aa</span>
+  <span class="aa aa-sans" aria-hidden="true">Aa</span>
+</button>
+
+<style>
+  .font-toggle {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    cursor: pointer;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    color: var(--color-text-muted);
+    transition: color var(--transition), border-color var(--transition), background var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .font-toggle:hover {
+    color: var(--color-accent);
+    border-color: var(--color-border);
+    background: var(--color-bg-subtle);
+  }
+
+  .aa {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .aa-mono { font-family: var(--font-mono); }
+  .aa-sans { font-family: var(--font-sans-base); }
+
+  /* Show the "Aa" for the font you'll switch TO */
+  :global([data-font="sans"]) .aa-sans { display: none; }
+  :global([data-font="mono"]) .aa-mono { display: none; }
+</style>
+
+<script is:inline>
+  const fontBtn = document.getElementById('font-toggle');
+
+  function updateFontLabel() {
+    const isMono = document.documentElement.dataset.font === 'mono';
+    const label = isMono ? 'Switch to sans-serif font' : 'Switch to monospace font';
+    if (fontBtn) {
+      fontBtn.setAttribute('aria-label', label);
+      fontBtn.setAttribute('title', label);
+    }
+  }
+
+  updateFontLabel();
+
+  fontBtn?.addEventListener('click', () => {
+    const current = document.documentElement.dataset.font;
+    const next = current === 'mono' ? 'sans' : 'mono';
+    document.documentElement.dataset.font = next;
+    localStorage.setItem('font', next);
+    updateFontLabel();
+  });
+</script>

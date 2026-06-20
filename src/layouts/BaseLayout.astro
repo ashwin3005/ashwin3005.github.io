@@ -32,14 +32,15 @@ const fullTitle = `${title} | ${SITE.title}`;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-font="sans">
   <head>
-    <!-- Theme init: must run before any paint to prevent FOUC -->
+    <!-- Theme + font init: must run before any paint to prevent FOUC -->
     <script is:inline>
       (function () {
         const saved = localStorage.getItem('theme');
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         document.documentElement.dataset.theme = saved ?? (prefersDark ? 'dark' : 'light');
+        document.documentElement.dataset.font = localStorage.getItem('font') ?? 'sans';
       })();
     </script>
 
